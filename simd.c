@@ -16,7 +16,6 @@ int main() {
 
     add_floats(a, b, result, 8);
 
-    // Print the result
     for (int i = 0; i < 8; i++) {
         printf("%f ", result[i]);
     }
