@@ -1,8 +1,9 @@
-# Makefile for SIMD Example
+# Makefile for SIMD
 
-CC=gcc
+CC ?= gcc # set gcc as the default compiler but allows it to be overridden i.e <CC=clang make> or <make CC=clang>
 CFLAGS=-O2
-TARGET=simd_example
+BUILD_DIR=./build
+TARGET=$(BUILD_DIR)/simd
 
 # Detect the architecture (ARM or x86_64)
 UNAME_P := $(shell uname -m)
@@ -12,10 +13,18 @@ else
     CFLAGS += -msse2
 endif
 
-all: $(TARGET)
+all: $(BUILD_DIR) $(TARGET)
 
-$(TARGET): simd_example.c
-    $(CC) $(CFLAGS) $^ -o $@
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+$(TARGET): simd.c
+	$(CC) $(CFLAGS) $^ -o $@
+
+# test target using criterion
+test: $(BUILD_DIR)
+	$(CC) -o $(BUILD_DIR)/test_simd test_simd_operations.c simd_operations.c -lcriterion
 
 clean:
-    rm -f $(TARGET)
+	rm -f $(BUILD_DIR)
+
